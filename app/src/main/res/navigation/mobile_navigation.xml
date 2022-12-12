@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_estudiante">
+
+    <fragment
+        android:id="@+id/navigation_estudiante"
+        android:name="com.example.bitacoraderegistros.ui.estudiante.EstudianteFragment"
+        android:label="@string/title_student"
+        tools:layout="@layout/fragment_estudiante" />
+
+    <fragment
+        android:id="@+id/navigation_materia"
+        android:name="com.example.bitacoraderegistros.ui.materia.MateriaFragment"
+        android:label="@string/title_materia"
+        tools:layout="@layout/fragment_materia" />
+
+    <fragment
+        android:id="@+id/navigation_sala"
+        android:name="com.example.bitacoraderegistros.ui.computo.ComputoFragment"
+        android:label="@string/title_sala"
+        tools:layout="@layout/fragment_computo" />
+
+    <fragment
+        android:id="@+id/navigation_bitacora"
+        android:name="com.example.bitacoraderegistros.ui.bitacora.BitacoraFragment"
+        android:label="@string/title_bitacora"
+        tools:layout="@layout/fragment_bitacora" />
+
+</navigation>

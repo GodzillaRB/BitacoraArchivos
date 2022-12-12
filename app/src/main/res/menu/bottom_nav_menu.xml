@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_estudiante"
+        android:icon="@drawable/ic_baseline_person_add_24"
+        android:title="@string/title_student" />
+
+    <item
+        android:id="@+id/navigation_materia"
+        android:icon="@drawable/ic_baseline_local_library_24"
+        android:title="@string/title_materia" />
+
+    <item
+        android:id="@+id/navigation_sala"
+        android:icon="@drawable/ic_baseline_computer_24"
+        android:title="@string/title_sala" />
+
+    <item
+        android:id="@+id/navigation_bitacora"
+        android:icon="@drawable/ic_baseline_menu_book_24"
+        android:title="@string/title_bitacora" />
+
+</menu>
