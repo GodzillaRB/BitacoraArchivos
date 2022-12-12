@@ -14,6 +14,8 @@ import com.example.bitacoraderegistros.databinding.FragmentBitacoraBinding
 import com.example.bitacoraderegistros.databinding.FragmentEstudianteBinding
 import com.example.bitacoraderegistros.files.escribirArchivo
 import com.example.bitacoraderegistros.files.leerArchivo
+import com.example.bitacoraderegistros.models.Estudiante
+import com.example.bitacoraderegistros.sqlite.setEstudianteDB
 import com.example.bitacoraderegistros.ui.ListarActivity
 
 class EstudianteFragment : Fragment() {
@@ -56,9 +58,16 @@ class EstudianteFragment : Fragment() {
     fun addStudent(){
         with(binding){
             btnRegistrarEstudiante.setOnClickListener {
-                var cadena = "${nControl.text.toString()},${name.text.toString()},${carrera.selectedItem},${semestre.selectedItem},${obtenerGrupo()}\n"
-                escribirArchivo("RegistroEstudiante", cadena)
+                var estudiante: Estudiante? = null
+                estudiante = Estudiante(
+                    nControl.text.toString(),
+                    name.text.toString(),
+                    carrera.selectedItem.toString(),
+                    semestre.selectedItem.toString().toInt(),
+                    obtenerGrupo()
+                )
 
+                setEstudianteDB(estudiante, requireActivity())
                 Toast.makeText(requireContext(), "Usuario Registrado!!", Toast.LENGTH_LONG).show()
                 limpiarDatos()
             }
