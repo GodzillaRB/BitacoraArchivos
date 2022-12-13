@@ -16,7 +16,11 @@ import com.example.bitacoraderegistros.databinding.FragmentMateriaBinding
 import com.example.bitacoraderegistros.date_time.DatePickerFragment
 import com.example.bitacoraderegistros.date_time.TimePickerFragment
 import com.example.bitacoraderegistros.files.escribirArchivo
+import com.example.bitacoraderegistros.files.getMaterias
 import com.example.bitacoraderegistros.files.leerArchivo
+import com.example.bitacoraderegistros.models.Materia
+import com.example.bitacoraderegistros.sqlite.getMateriaDB
+import com.example.bitacoraderegistros.sqlite.setMateriaDB
 import com.example.bitacoraderegistros.ui.ListarActivity
 
 class MateriaFragment : Fragment() {
@@ -49,14 +53,16 @@ class MateriaFragment : Fragment() {
         return root
     }
 
-    fun agregarASpinners(){
-        with(binding){
-            dia.adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, dias)
+    fun agregarASpinners() {
+        with(binding) {
+            dia.adapter =
+                ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, dias)
             diaSeleccionado = dia.selectedItem.toString()
         }
     }
-    fun horaSeleccionada(){
-        with(binding){
+
+    fun horaSeleccionada() {
+        with(binding) {
             horaInicio.setOnClickListener {
                 showTimePickerDialog(horaInicio)
             }
@@ -67,14 +73,25 @@ class MateriaFragment : Fragment() {
         }
     }
 
-    fun addMateria(){
-        with(binding){
+    fun addMateria() {
+        with(binding) {
             btnRegistrarMateria.setOnClickListener {
-                var cadena = "${claveMateria.text.toString()},${nombreMateria.text.toString()},${dia.selectedItem},${horaInicio.text.toString()},${horaSalida.text.toString()}\n"
-                escribirArchivo("RegistroMateria", cadena)
+                if (claveMateria.text.toString() != "" && nombreMateria.text.toString() != "" && dia.selectedItem.toString() != "" && horaInicio.text.toString() != "" && horaSalida.text.toString()!= "") {
+                    var materia: Materia? = null
+                    materia = Materia(
+                        claveMateria.text.toString(),
+                        nombreMateria.text.toString(),
+                        dia.selectedItem.toString(),
+                        horaInicio.text.toString(),
+                        horaSalida.text.toString()
 
-                Toast.makeText(requireContext(), "Materia Registrada!!", Toast.LENGTH_LONG).show()
-                limpiarDatos()
+                    )
+                    setMateriaDB(materia, requireActivity())
+                    Toast.makeText(requireContext(), "Materia Registrada!!", Toast.LENGTH_LONG)
+                        .show()
+                    limpiarDatos()
+                }else
+                    Toast.makeText(requireContext(), "Favor de rellenar todos los campos", Toast.LENGTH_LONG).show()
             }
         }
     }
@@ -85,13 +102,13 @@ class MateriaFragment : Fragment() {
         timePicker.show(MainActivity.ssuportFragmentManager, "time")
     }
 
-    fun onTimeSelected(it: String, vi: EditText){
+    fun onTimeSelected(it: String, vi: EditText) {
         vi.setText("$it")
     }
 
     fun listarContenido() {
         binding.btnListarMateria.setOnClickListener {
-            val cadena = leerArchivo("RegistroMateria")
+            val cadena = getMateriaDB(requireActivity())
             val intent = Intent(activity, ListarActivity::class.java)
             intent.putExtra("titulo", "Materias")
             intent.putExtra("contenido", cadena)
@@ -99,14 +116,14 @@ class MateriaFragment : Fragment() {
         }
     }
 
-    fun limpiarDatos(){
-        with(binding){
+    fun limpiarDatos() {
+        with(binding) {
             claveMateria.setText(null)
             nombreMateria.setText(null)
             dia.setSelection(0)
             horaInicio.setText(null)
             horaSalida.setText(null)
-            }
+        }
     }
 
 }

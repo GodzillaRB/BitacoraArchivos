@@ -15,12 +15,13 @@ import com.example.bitacoraderegistros.databinding.FragmentEstudianteBinding
 import com.example.bitacoraderegistros.files.escribirArchivo
 import com.example.bitacoraderegistros.files.leerArchivo
 import com.example.bitacoraderegistros.models.Estudiante
+import com.example.bitacoraderegistros.sqlite.getEstudianteDB
 import com.example.bitacoraderegistros.sqlite.setEstudianteDB
 import com.example.bitacoraderegistros.ui.ListarActivity
 
 class EstudianteFragment : Fragment() {
 
-    val semestres = listOf(1,2,3,4,5,6,7,8,9,10,11,12)
+    val semestres = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
     val carreras = listOf("Informática", "TICS", "Agronomia", "Biología", "Forestal")
 
     private var _binding: FragmentEstudianteBinding? = null
@@ -46,39 +47,47 @@ class EstudianteFragment : Fragment() {
         return root
     }
 
-    fun agregarASpinners(){
-        with(binding){
-            semestre.adapter = ArrayAdapter<Int>(requireContext(), android.R.layout.simple_spinner_item, semestres)
+    fun agregarASpinners() {
+        with(binding) {
+            semestre.adapter =
+                ArrayAdapter<Int>(requireContext(), android.R.layout.simple_spinner_item, semestres)
 
-            carrera.adapter = ArrayAdapter<String>(requireContext(), android.R.layout.simple_spinner_item, carreras)
+            carrera.adapter = ArrayAdapter<String>(
+                requireContext(),
+                android.R.layout.simple_spinner_item,
+                carreras
+            )
         }
     }
 
 
-    fun addStudent(){
-        with(binding){
+    fun addStudent() {
+        with(binding) {
             btnRegistrarEstudiante.setOnClickListener {
-                var estudiante: Estudiante? = null
-                estudiante = Estudiante(
-                    nControl.text.toString(),
-                    name.text.toString(),
-                    carrera.selectedItem.toString(),
-                    semestre.selectedItem.toString().toInt(),
-                    obtenerGrupo()
-                )
+                if (nControl.text.toString() != "" && name.text.toString() != "" && carrera.selectedItem.toString() != "" && semestre.selectedItem.toString() != "" && obtenerGrupo() != ""){
+                    var estudiante: Estudiante? = null
+                    estudiante = Estudiante(
+                        nControl.text.toString(),
+                        name.text.toString(),
+                        carrera.selectedItem.toString(),
+                        semestre.selectedItem.toString().toInt(),
+                        obtenerGrupo()
+                    )
+                    setEstudianteDB(estudiante, requireActivity())
+                    Toast.makeText(requireContext(), "Usuario Registrado!!", Toast.LENGTH_LONG).show()
+                    limpiarDatos()
+                }else
+                    Toast.makeText(requireContext(), "Favor de rellenar todos los campos", Toast.LENGTH_LONG).show()
 
-                setEstudianteDB(estudiante, requireActivity())
-                Toast.makeText(requireContext(), "Usuario Registrado!!", Toast.LENGTH_LONG).show()
-                limpiarDatos()
             }
         }
     }
 
     fun obtenerGrupo() = if (binding.btnA.isChecked) "A" else "B"
 
-    fun listarContenido(){
+    fun listarContenido() {
         binding.btnListarEstudiante.setOnClickListener {
-            val cadena = leerArchivo("RegistroEstudiante")
+            val cadena = getEstudianteDB(requireActivity())
             val intent = Intent(activity, ListarActivity::class.java)
             intent.putExtra("titulo", "Estudiantes")
             intent.putExtra("contenido", cadena)
@@ -86,9 +95,9 @@ class EstudianteFragment : Fragment() {
         }
     }
 
-    fun limpiarDatos(){
+    fun limpiarDatos() {
 
-        with(binding){
+        with(binding) {
             nControl.setText(null)
             name.setText(null)
             carrera.setSelection(0)

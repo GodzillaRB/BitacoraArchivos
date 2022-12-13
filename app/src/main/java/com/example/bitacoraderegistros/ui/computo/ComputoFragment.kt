@@ -12,6 +12,10 @@ import com.example.bitacoraderegistros.databinding.FragmentBitacoraBinding
 import com.example.bitacoraderegistros.databinding.FragmentComputoBinding
 import com.example.bitacoraderegistros.files.escribirArchivo
 import com.example.bitacoraderegistros.files.leerArchivo
+import com.example.bitacoraderegistros.models.Materia
+import com.example.bitacoraderegistros.models.Sala
+import com.example.bitacoraderegistros.sqlite.getSalaDB
+import com.example.bitacoraderegistros.sqlite.setSalaDB
 import com.example.bitacoraderegistros.ui.ListarActivity
 
 class ComputoFragment : Fragment() {
@@ -41,20 +45,35 @@ class ComputoFragment : Fragment() {
     fun addSala() {
         with(binding) {
             btnRegistrarSala.setOnClickListener {
-                var cadena = "Clave de la Sala: ${clave.text.toString()}, Nombre: ${nombreSala.text.toString()}"
-                escribirArchivo("RegistrarSala", cadena)
-
-                Toast.makeText(requireContext(), "Sala Registrada!!", Toast.LENGTH_LONG).show()
+                if (clave.text.toString() != "" && nombreSala.text.toString() != "") {
+                    var sala: Sala? = null
+                    sala = Sala(
+                        clave.text.toString(),
+                        nombreSala.text.toString()
+                    )
+                    setSalaDB(sala, requireActivity())
+                    Toast.makeText(requireContext(), "Sala Registrada!!", Toast.LENGTH_LONG).show()
+                    limpiarDatos()
+                }else
+                    Toast.makeText(requireContext(), "Favor de rellenar todos los campos", Toast.LENGTH_LONG).show()
             }
         }
     }
-    fun listarContenido(){
+
+    fun listarContenido() {
         binding.btnListarSala.setOnClickListener {
-            val cadena = leerArchivo("RegistrarSala")
+            val cadena = getSalaDB(requireActivity())
             val intent = Intent(activity, ListarActivity::class.java)
-            intent.putExtra("titulo","Sala")
+            intent.putExtra("titulo", "Sala")
             intent.putExtra("contenido", cadena)
             startActivity(intent)
+        }
+    }
+
+    fun limpiarDatos() {
+        with(binding) {
+            clave.setText(null)
+            nombreSala.setText(null)
         }
     }
 }
